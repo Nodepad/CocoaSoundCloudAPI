@@ -22,6 +22,7 @@
 
 typedef void(^SCRequestResponseHandler)(NSURLResponse *response, NSData *responseData, NSError *error);
 typedef void(^SCRequestSendingProgressHandler)(unsigned long long bytesSend, unsigned long long bytesTotal);
+typedef void(^SCRequestReceivingDataHandler)(NSData *data);
 
 enum SCRequestMethod {
     SCRequestMethodGET = 0,
@@ -48,6 +49,13 @@ typedef enum SCRequestMethod SCRequestMethod;
        usingParameters:(NSDictionary *)parameters
            withAccount:(SCAccount *)account
 sendingProgressHandler:(SCRequestSendingProgressHandler)progressHandler
+       responseHandler:(SCRequestResponseHandler)responseHandler;
+
++ (id)   performMethod:(SCRequestMethod)aMethod
+            onResource:(NSURL *)resource
+       usingParameters:(NSDictionary *)parameters
+           withAccount:(SCAccount *)account
+  receivingDataHandler:(SCRequestReceivingDataHandler)receivingDataHandler
        responseHandler:(SCRequestResponseHandler)responseHandler;
 
 + (void)cancelRequest:(id)request;

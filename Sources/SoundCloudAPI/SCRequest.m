@@ -77,6 +77,45 @@ sendingProgressHandler:(SCRequestSendingProgressHandler)aProgressHandler
     return [request autorelease];
 }
 
++ (id)   performMethod:(SCRequestMethod)aMethod
+            onResource:(NSURL *)aResource
+       usingParameters:(NSDictionary *)someParameters
+           withAccount:(SCAccount *)anAccount
+  receivingDataHandler:(SCRequestReceivingDataHandler)aReceivingDataHandler
+       responseHandler:(SCRequestResponseHandler)aResponseHandler
+{
+    NSString *theMethod;
+    switch (aMethod) {
+        case SCRequestMethodPOST:
+            theMethod = @"POST";
+            break;
+            
+        case SCRequestMethodPUT:
+            theMethod = @"PUT";
+            break;
+            
+        case SCRequestMethodDELETE:
+            theMethod = @"DELETE";
+            break;
+            
+        case SCRequestMethodHEAD:
+            theMethod = @"HEAD";
+            break;
+            
+        default:
+            theMethod = @"GET";
+            break;
+    }
+    
+    NSAssert1([[aResource scheme] isEqualToString:@"https"], @"Resource '%@' is invalid because the scheme is not 'https'.", aResource);
+    
+    NXOAuth2Request *request = [[NXOAuth2Request alloc] initWithResource:aResource method:theMethod parameters:someParameters];
+    request.account = anAccount.oauthAccount;
+    [request performRequestWithReceivingDataHandler:aReceivingDataHandler
+                                    responseHandler:aResponseHandler];
+    return [request autorelease];
+}
+
 + (void)cancelRequest:(id)request;
 {
     if ([request isKindOfClass:[NXOAuth2Request class]] ||
